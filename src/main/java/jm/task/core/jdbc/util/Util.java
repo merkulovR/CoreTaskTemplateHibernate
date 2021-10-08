@@ -19,7 +19,7 @@ public class Util {
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static SessionFactory sessionFactory;
 
-    public SessionFactory createSessionFactory() {
+    public static SessionFactory createSessionFactory() {
         if (sessionFactory == null) {
             try {
                 Properties properties = new Properties();
@@ -48,7 +48,7 @@ public class Util {
         return sessionFactory;
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         Connection connection = null;
 
         try {
@@ -62,5 +62,3 @@ public class Util {
         return connection;
     }
 }
-
-//                Metadata metadata = new MetadataSources(serviceRegistry).getMetadataBuilder().build();

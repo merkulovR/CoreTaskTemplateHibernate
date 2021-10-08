@@ -6,18 +6,17 @@ import org.hibernate.*;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    Util util = new Util();
+    private static final SessionFactory SESSION_FACTORY = Util.createSessionFactory();
 
     public UserDaoHibernateImpl() {
     }
 
     @Override
     public void createUsersTable() {
-        SessionFactory sf = util.createSessionFactory();
         Session session = null;
 
         try {
-            session = sf.openSession();
+            session = SESSION_FACTORY.openSession();
             session.beginTransaction();
             Query query = session.createSQLQuery("CREATE TABLE IF NOT EXISTS users (" +
                     "id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT, " +
@@ -32,18 +31,22 @@ public class UserDaoHibernateImpl implements UserDao {
             }
         } finally {
             if (session != null) {
-                session.close();
+                try {
+                    session.close();
+                } catch (HibernateException e) {
+                    System.err.println("Не удалось закрыть Session.");
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     @Override
     public void dropUsersTable() {
-        SessionFactory sf = util.createSessionFactory();
         Session session = null;
 
         try {
-            session = sf.openSession();
+            session = SESSION_FACTORY.openSession();
             session.beginTransaction();
             Query query = session.createSQLQuery("DROP TABLE IF EXISTS users");
             query.executeUpdate();
@@ -54,18 +57,22 @@ public class UserDaoHibernateImpl implements UserDao {
             }
         } finally {
             if (session != null) {
-                session.close();
+                try {
+                    session.close();
+                } catch (HibernateException e) {
+                    System.err.println("Не удалось закрыть Session.");
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        SessionFactory sf = util.createSessionFactory();
         Session session = null;
 
         try {
-            session = sf.openSession();
+            session = SESSION_FACTORY.openSession();
             session.beginTransaction();
             session.save(new User(name, lastName, age));
             session.getTransaction().commit();
@@ -76,20 +83,26 @@ public class UserDaoHibernateImpl implements UserDao {
             }
         } finally {
             if (session != null) {
-                session.close();
+                try {
+                    session.close();
+                } catch (HibernateException e) {
+                    System.err.println("Не удалось закрыть Session.");
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     @Override
     public void removeUserById(long id) {
-        SessionFactory sf = util.createSessionFactory();
         Session session = null;
 
         try {
-            session = sf.openSession();
+            session = SESSION_FACTORY.openSession();
             session.beginTransaction();
-            session.delete(session.get(User.class, id));
+            session.createQuery("delete User where id = :param")
+                    .setLong("param", id)
+                    .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session.getTransaction() != null) {
@@ -97,21 +110,26 @@ public class UserDaoHibernateImpl implements UserDao {
             }
         } finally {
             if (session != null) {
-                session.close();
+                try {
+                    session.close();
+                } catch (HibernateException e) {
+                    System.err.println("Не удалось закрыть Session.");
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     @Override
     public List<User> getAllUsers() {
-        SessionFactory sf = util.createSessionFactory();
         Session session = null;
         List<User> list = null;
 
         try {
-            session = sf.openSession();
+            session = SESSION_FACTORY.openSession();
             session.beginTransaction();
-            list = session.createCriteria(User.class).list();
+            list = session.createQuery("from User")
+                    .list();
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session.getTransaction() != null) {
@@ -119,7 +137,12 @@ public class UserDaoHibernateImpl implements UserDao {
             }
         } finally {
             if (session != null) {
-                session.close();
+                try {
+                    session.close();
+                } catch (HibernateException e) {
+                    System.err.println("Не удалось закрыть Session.");
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -128,11 +151,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        SessionFactory sf = util.createSessionFactory();
         Session session = null;
 
         try {
-            session = sf.openSession();
+            session = SESSION_FACTORY.openSession();
             session.beginTransaction();
             Query query = session.createQuery("delete from User");
             query.executeUpdate();
@@ -143,7 +165,12 @@ public class UserDaoHibernateImpl implements UserDao {
             }
         } finally {
             if (session != null) {
-                session.close();
+                try {
+                    session.close();
+                } catch (HibernateException e) {
+                    System.err.println("Не удалось закрыть Session.");
+                    e.printStackTrace();
+                }
             }
         }
     }

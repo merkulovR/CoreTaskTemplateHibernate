@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private final Util util = new Util();
 
     public UserDaoJDBCImpl() {
     }
 
     public void createUsersTable() {
-        Connection con = util.getConnection();
+        Connection con = Util.getConnection();
         Statement statement = null;
 
         try {
@@ -46,7 +45,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        Connection con = util.getConnection();
+        Connection con = Util.getConnection();
         Statement statement = null;
 
         try {
@@ -75,7 +74,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        Connection con = util.getConnection();
+        Connection con = Util.getConnection();
         PreparedStatement ps = null;
 
         try {
@@ -108,7 +107,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        Connection con = util.getConnection();
+        Connection con = Util.getConnection();
         PreparedStatement ps = null;
 
         try {
@@ -139,7 +138,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        Connection con = util.getConnection();
+        Connection con = Util.getConnection();
         ResultSet resultSet = null;
         PreparedStatement ps = null;
 
@@ -196,7 +195,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        Connection con = util.getConnection();
+        Connection con = Util.getConnection();
         PreparedStatement ps = null;
 
         try {
